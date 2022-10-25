@@ -602,42 +602,6 @@ files:
     code_snippet\">${codeNth.code}</pre>\n\t<span id=\"load_date\">${codeNth.date}</span>\n\
     </body>\n\n</html>"
   learner_created: true
-- name: src/platform/CodeRecordStore.java
-  visible: true
-  text: |
-    package platform;
-
-    import java.util.ArrayList;
-
-    public class CodeRecordStore {
-        private ArrayList<CodeRecord> codeStore = new ArrayList<>();
-        public CodeRecordStore() {}
-
-        public int addCodeRecord(CodeRecord codeRecord) {
-            if(this.codeStore.add(codeRecord))
-                return codeStore.size();
-            return -1;
-        }
-
-        public CodeRecord retrieveNth(Integer n) {
-            return codeStore.get(n - 1);
-        }
-
-        public ArrayList<CodeRecord> getCodeStore() {
-            return codeStore;
-        }
-
-        public ArrayList<CodeRecord> retrieveLatest() {
-            ArrayList<CodeRecord> resultset = new ArrayList<>();
-            int size = codeStore.size();
-            int limit = Math.min(size, 10);
-            for (int i = 1; i <= limit; i++) {
-                resultset.add( codeStore.get(size-i));
-            }
-            return resultset;
-        }
-    }
-  learner_created: true
 - name: src/resources/templates/latest.ftlh
   visible: true
   text: "<html>\n\n<head>\n\t<title>Latest</title>\n</head>\n\n<body>\n    <#list\
@@ -704,12 +668,9 @@ files:
 - name: src/platform/persistence/CodeRecordRepository.java
   visible: true
   learner_created: true
-- name: src/platform/businesslayer/Codej.java
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11030#comment
 status: Solved
 feedback:
   message: Congratulations!
   time: Mon, 24 Oct 2022 11:44:37 UTC
-record: -1
+record: 4

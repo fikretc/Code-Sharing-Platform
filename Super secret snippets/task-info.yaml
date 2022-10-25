@@ -641,6 +641,290 @@ files:
         }
     }
   learner_created: false
+- name: src/platform/CodeController.java
+  visible: true
+  text: |
+    package platform;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.stereotype.Controller;
+    import org.springframework.ui.Model;
+    import org.springframework.web.bind.annotation.*;
+    import platform.businesslayer.CodeRecord;
+    import platform.businesslayer.CodeRecordService;
+
+    import javax.servlet.http.HttpServletResponse;
+
+    @Controller
+    public class CodeController {
+
+        @Autowired
+        CodeRecordService codeRecordService;
+
+        @GetMapping(value = "/code/latest", produces = MediaType.TEXT_HTML_VALUE)
+        public String getCodePageLatest(Model model) {
+            model.addAttribute("codeList", codeRecordService.retrieveLatest());
+
+            return "latest";
+        }
+
+
+        @GetMapping(value = "/code/{n}", produces = MediaType.TEXT_HTML_VALUE)
+        public String getCodePageN(Model model, @PathVariable Integer n) {
+
+            model.addAttribute("codeNth", codeRecordService.findCodeRecordById(n));
+            return "codenth";
+        }
+
+
+        @GetMapping(value = "/code/new", produces = MediaType.TEXT_HTML_VALUE)
+        @ResponseBody
+        public String getNewCodePage(HttpServletResponse response) {
+            String responseString = "<html>\n" +
+                    "<head>\n" +
+                    "    <title>Create</title>\n" +
+                    "<script>\n" +
+
+                    "function send() {\n" +
+                    "    let object = {\n" +
+                    "            \"code\": document.getElementById(\"code_snippet\").value" +
+                    "    };\n" +
+                    "    let json = JSON.stringify(object);\n" +
+                    "    let xhr = new XMLHttpRequest();\n" +
+                    "    xhr.open(\"POST\", '/api/code/new', false);\n" +
+                    "    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');\n" +
+                    "    xhr.send(json);\n" +
+                    "    if (xhr.status == 200) {\n" +
+                    "        alert(\"Success!\");\n" +
+                    "    }\n" +
+                    "}\n" +
+                    "</script>" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <textarea id=\"code_snippet\">\n" +
+                    "</textarea>\n" +
+                    "<button id=\"send_snippet\" type=\"submit\"" +
+                    "onclick=\"send()\">" +
+                    "Submit</button>" +
+                    "</body>\n" +
+                    "</html>";
+            return responseString;
+        }
+
+        @GetMapping(value = "/api/code/latest", produces = "application/json")
+        public ResponseEntity getApiCodeLastUsingResponseEntityBuilder() {
+
+             return ResponseEntity.status(HttpStatus.OK)
+                    .body(codeRecordService.retrieveLatest());
+        }
+
+        @GetMapping(value = "/api/code/{n}", produces = "application/json")
+        public ResponseEntity getApiCodeNUsingResponseEntityBuilder(@PathVariable Integer n) {
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(codeRecordService.findCodeRecordById(n));
+        }
+
+        @PostMapping(value="api/code/new", produces="application/json")
+        public ResponseEntity postApiCode(@RequestBody CodeRecord code) { //String code) {
+            CodeRecord codeRecord = codeRecordService.save(code);
+            int codeId = codeRecord.getCodeId();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("{\n    id : \"" + codeId + "\"\n}");
+        }
+
+
+
+    }
+  learner_created: true
+- name: src/platform/businesslayer/CodeRecordService.java
+  visible: true
+  text: |-
+    package platform.businesslayer;
+
+    import org.springframework.stereotype.Service;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import platform.persistence.CodeRecordRepository;
+
+    import java.time.LocalDateTime;
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.stream.Collectors;
+
+    @Service
+    public class CodeRecordService {
+
+        private final CodeRecordRepository codeRecordRepository;
+
+        @Autowired
+        public CodeRecordService(CodeRecordRepository codeRecordRepository) {
+            this.codeRecordRepository = codeRecordRepository;
+        }
+
+        public CodeRecord findCodeRecordById(Integer id) {
+            return codeRecordRepository.findCodeRecordById(id);
+        }
+
+        public CodeRecord save(CodeRecord toSave) {
+            if (toSave.getDate() == null) {
+                toSave.setDate(LocalDateTime.now());
+            }
+            return codeRecordRepository.save(toSave);
+        }
+
+        public List<CodeRecord> retrieveLatest() {
+            List<CodeRecord> resultSet = new ArrayList<>(codeRecordRepository.findAll());
+            resultSet.sort((codeRecord1, codeRecord2) ->
+                    codeRecord2.getDate().compareTo(codeRecord1.getDate()));
+            return resultSet.stream()
+                    .limit(10)
+                    .collect(Collectors.toList());
+        }
+
+
+    }
+  learner_created: true
+- name: src/platform/persistence/CodeRecordRepository.java
+  visible: true
+  text: |-
+    package platform.persistence;
+
+
+    import org.springframework.data.repository.CrudRepository;
+    import org.springframework.stereotype.Repository;
+    import platform.businesslayer.CodeRecord;
+
+    import java.util.List;
+
+    @Repository
+    public interface CodeRecordRepository extends CrudRepository<CodeRecord, Long> {
+        CodeRecord findCodeRecordById(Integer id);
+        List<CodeRecord> findAll();
+        CodeRecord save(CodeRecord toSave);
+
+    }
+  learner_created: true
+- name: src/resources/templates/codenth.ftlh
+  visible: true
+  text: "<html>\n\n<head>\n\t<title>Code</title>\n\t<link rel=\"stylesheet\"\n   \
+    \        href=\"//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css\"\
+    >\n    <script src=\"//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js\"\
+    ></script>\n    <script>hljs.initHighlightingOnLoad();</script>\n    <link rel=\"\
+    stylesheet\" href=\"style.css\">\n</head>\n\n<body>\n\t<pre id=\"code_snippet\"\
+    ><code>${codeNth.code}</code></pre>\n\t<span id=\"load_date\"><code>${codeNth.date}</code></span>\n\
+    </body>\n\n</html>"
+  learner_created: true
+- name: src/platform/businesslayer/CodeRecord.java
+  visible: true
+  text: |
+    package platform.businesslayer;
+
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import com.sun.istack.NotNull;
+    import io.micrometer.core.lang.NonNull;
+
+    import javax.persistence.*;
+    import java.time.LocalDateTime;
+    import java.time.format.DateTimeFormatter;
+    import java.util.UUID;
+
+    @Entity
+    @Table
+    public class CodeRecord {
+        @Id
+        @JsonIgnore
+        @Column
+        @GeneratedValue
+        //private UUID codeId;
+        private int codeId;
+        @Column
+        @NotNull
+        private String code;
+        @Column
+        private LocalDateTime date;
+
+        private static final String DATE_FORMATTER= "yyyy/MM/dd HH:mm:ss";
+
+        public CodeRecord() {
+
+        }
+        public CodeRecord(String code, LocalDateTime date) {
+            this.code = code;
+            this.date = date;
+        }
+
+
+        public CodeRecord(String code) {
+            this.code = code;
+            this.date = LocalDateTime.now();
+        }
+
+        public void newCodeAndTime(String code) {
+            this.code = code;
+            this.date = LocalDateTime.now();
+        }
+
+        public void setCodeId(int codeId) {
+            this.codeId = codeId;
+        }
+
+        public int getCodeId() {
+            return this.codeId;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public LocalDateTime getDate() {
+            return this.date;
+            //return this.dateOfCode();
+        }
+
+        public void setDate(LocalDateTime localDateTime) {
+            this.date = localDateTime;
+        }
+
+        public String dateOfCode() {
+            return getFormatDateTime(this.date);
+        }
+
+        public static String getFormatDateTime(LocalDateTime localDateTime) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+            return localDateTime.format(formatter);
+        }
+    }
+  learner_created: true
+- name: src/resources/templates/latest.ftlh
+  visible: true
+  text: "<html>\n\n<head>\n\t<title>Latest</title>\n\t<link rel=\"stylesheet\"\n \
+    \          href=\"//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css\"\
+    >\n    <script src=\"//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js\"\
+    ></script>\n    <script>hljs.initHighlightingOnLoad();</script>\n    <link rel=\"\
+    stylesheet\" href=\"style.css\">\n</head>\n\n<body>\n    <#list codeList as code>\n\
+    \t    <pre id=\"code_snippet\"><code>${code.code}</code></pre>\n\t    <span id=\"\
+    load_date\">${code.date}</span>\n\t</#list>\n</body>\n\n</html>"
+  learner_created: true
+- name: src/resources/style.css
+  visible: true
+  text: |-
+    #code_snippet {
+        background-color: #d8eead;
+        color: #640000;
+    }
+
+    #load_date {
+        background-color: #2ca179;
+        color: #ff8c00;
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11031#comment
 status: Unchecked
 record: -1

@@ -6,8 +6,8 @@ import platform.persistence.CodeRecordRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CodeRecordService {
@@ -19,8 +19,8 @@ public class CodeRecordService {
         this.codeRecordRepository = codeRecordRepository;
     }
 
-    public Codej findCodeRecordById(Integer id) {
-        return new Codej(codeRecordRepository.findCodeRecordById(id));
+    public CodeRecord findCodeRecordById(Integer id) {
+        return codeRecordRepository.findCodeRecordByCodeId(id);
     }
 
     public CodeRecord save(CodeRecord toSave) {
@@ -30,19 +30,14 @@ public class CodeRecordService {
         return codeRecordRepository.save(toSave);
     }
 
-    public List<Codej> retrieveLatest() {
-        List<CodeRecord> allCodes = findAll();
-        List<Codej> resultSet = new ArrayList<>();
-        int size = allCodes.size();
-        int limit = Math.min(size, 10);
-        for (int i = 1; i <= limit; i++) {
-            resultSet.add(new Codej(allCodes.get(size-i)));
-        }
-        return resultSet;
+    public List<CodeRecord> retrieveLatest() {
+        List<CodeRecord> resultSet = new ArrayList<>(codeRecordRepository.findAll());
+        resultSet.sort((codeRecord1, codeRecord2) ->
+                codeRecord2.getDate().compareTo(codeRecord1.getDate()));
+        return resultSet.stream()
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
-    public List<CodeRecord> findAll() {
-        return codeRecordRepository.findAll();
-    }
 
 }
