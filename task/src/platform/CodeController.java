@@ -11,7 +11,6 @@ import platform.businesslayer.CodeRecord;
 import platform.businesslayer.CodeRecordService;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 
 @Controller
 public class CodeController {
@@ -86,9 +85,9 @@ public class CodeController {
     @PostMapping(value="api/code/new", produces="application/json")
     public ResponseEntity postApiCode(@RequestBody CodeRecord code) { //String code) {
         CodeRecord codeRecord = codeRecordService.save(code);
-        Integer n = codeRecord.getId();
+        int codeId = codeRecord.getCodeId();
         return ResponseEntity.status(HttpStatus.OK)
-                .body("{\n    id : \"" + n.toString() + "\"\n}");
+                .body("{\n    id : \"" + codeId + "\"\n}");
     }
 
 

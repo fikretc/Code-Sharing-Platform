@@ -1,17 +1,25 @@
 package platform.businesslayer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
+import io.micrometer.core.lang.NonNull;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Entity
 @Table
 public class CodeRecord {
     @Id
+    @JsonIgnore
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //private UUID codeId;
+    private int codeId;
     @Column
-    private int id;
-    @Column
+    @NotNull
     private String code;
     @Column
     private LocalDateTime date;
@@ -37,12 +45,12 @@ public class CodeRecord {
         this.date = LocalDateTime.now();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCodeId(int codeId) {
+        this.codeId = codeId;
     }
 
-    public int getId() {
-        return this.id;
+    public int getCodeId() {
+        return this.codeId;
     }
 
     public String getCode() {

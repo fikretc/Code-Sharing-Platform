@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public interface CodeRecordRepository extends CrudRepository<CodeRecord, Long> {
-    CodeRecord findCodeRecordById(Integer id);
+    CodeRecord findCodeRecordByCodeId(Integer id);
     List<CodeRecord> findAll();
     CodeRecord save(CodeRecord toSave);
+
 }
