@@ -10,8 +10,14 @@
 </head>
 
 <body>
+	<span id="load_date">${codeNth.date}</span>
+    <#noautoesc>
+    <#assign xx = '<p><span id="views-restriction">${codeNth.views} more views allowed</span></p>'>
+	<#assign yy = '<p><span id="time-restriction">The code will be available for ${codeNth.time} seconds</span></p>'>
+	${(codeNth.views>0)?then(xx,'')}
+    ${(codeNth.time>0)?then(yy,'')}
+    </#noautoesc>
 	<pre id="code_snippet"><code>${codeNth.code}</code></pre>
-	<span id="load_date"><code>${codeNth.date}</code></span>
 </body>
 
 </html>

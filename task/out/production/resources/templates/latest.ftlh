@@ -11,8 +11,8 @@
 
 <body>
     <#list codeList as code>
-	    <pre id="code_snippet"><code>${code.code}</code></pre>
 	    <span id="load_date">${code.date}</span>
+	    <pre id="code_snippet"><code>${code.code}</code></pre>
 	</#list>
 </body>
 
