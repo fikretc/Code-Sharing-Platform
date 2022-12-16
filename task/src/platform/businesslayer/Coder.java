@@ -3,7 +3,6 @@ package platform.businesslayer;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.time.LocalDateTime;
 @JsonPropertyOrder({"code", "date", "time", "views"})
 public class Coder {
     CodeRecord codeRecord;
@@ -27,6 +26,7 @@ public class Coder {
     }
 
     public int getTime() {
-        return this.codeRecord.remainingTime();
+        return this.codeRecord.getRemainingTime();
     }
+
 }

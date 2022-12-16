@@ -44,6 +44,7 @@ public class CodeRecordService {
         //Check views restriction
         if(codeRecord.getViews() != 0) {
             codeRecord.setViews(codeRecord.getViews()-1);
+            codeRecord.setViewsRestriction(true);
             if (codeRecord.getViews() == 0) {
                 codeRecordRepository.delete(codeRecord);
             } else {

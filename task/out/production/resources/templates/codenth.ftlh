@@ -12,8 +12,8 @@
 <body>
 	<span id="load_date">${codeNth.date}</span>
     <#noautoesc>
-    <#assign xx = '<p><span id="views-restriction">${codeNth.views} more views allowed</span></p>'>
-	<#assign yy = '<p><span id="time-restriction">The code will be available for ${codeNth.time} seconds</span></p>'>
+    <#assign xx = '<span id="views_restriction">${codeNth.views} more views allowed</span>'>
+	<#assign yy = '<span id="time_restriction">The code will be available for ${codeNth.time} seconds</span>'>
 	${(codeNth.views>0)?then(xx,'')}
     ${(codeNth.time>0)?then(yy,'')}
     </#noautoesc>

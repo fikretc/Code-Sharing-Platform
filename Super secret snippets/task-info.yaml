@@ -932,15 +932,9 @@ files:
   visible: true
   learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11031#comment
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Wrong answer in test #12
-
-    GET /api/code/latest 1st snippet doesn&#39;t match actual snippet.
-    Expected:
-    class Code { ...
-    Found:
-    public static void ...
-  time: "Sun, 30 Oct 2022 18:57:37 UTC"
-record: -1
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: "Thu, 15 Dec 2022 16:10:28 UTC"
+record: 5

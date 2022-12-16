@@ -8,7 +8,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.UUID;
 
 @Entity
@@ -33,6 +32,7 @@ public class CodeRecord {
 
 
     private static final String DATE_FORMATTER= "yyyy/MM/dd HH:mm:ss";
+    private boolean viewsRestriction = false;
 
     public CodeRecord() {
         this.date = LocalDateTime.now();
@@ -70,15 +70,14 @@ public class CodeRecord {
     }
 
     public LocalDateTime getDate() {
-        return this.date.withNano(0);
-        //return this.dateOfCode();
+        return this.date; //.withNano(0)
     }
 
     public void setDate(LocalDateTime localDateTime) {
-        this.date = localDateTime.withNano(0);
+        this.date = localDateTime;//.withNano(0)
     }
 
-    public String dateOfCode() {
+    public String getDateOfCode() {
         return getFormatDateTime(this.date);
     }
 
@@ -111,11 +110,19 @@ public class CodeRecord {
 
     }
 
-    public int remainingTime() {
+    public int getRemainingTime() {
         LocalDateTime endTime = this.getDate()
                 .plus(this.getTime(), ChronoUnit.SECONDS);
         Duration duration = Duration.between(LocalDateTime.now(), endTime);
         int seconds = (int) (duration.toSeconds() < 0? 0 : duration.toSeconds());
         return seconds;
+    }
+
+    public void setViewsRestriction(boolean b) {
+        this.viewsRestriction = b;
+    }
+
+    public boolean isViewsRestriction() {
+        return viewsRestriction;
     }
 }

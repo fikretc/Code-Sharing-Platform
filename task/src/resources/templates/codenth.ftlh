@@ -10,14 +10,14 @@
 </head>
 
 <body>
-	<span id="load_date">${codeNth.date}</span>
+	<span id="load_date">${codeRecordNth.dateOfCode}</span>
     <#noautoesc>
-    <#assign xx = '<p><span id="views-restriction">${codeNth.views} more views allowed</span></p>'>
-	<#assign yy = '<p><span id="time-restriction">The code will be available for ${codeNth.time} seconds</span></p>'>
-	${(codeNth.views>0)?then(xx,'')}
-    ${(codeNth.time>0)?then(yy,'')}
+    <#assign xx = '<span id="views_restriction"> ${codeRecordNth.views} more views allowed </span>'>
+	<#assign yy = '<span id="time_restriction">The code will be available for ${codeRecordNth.remainingTime} seconds</span>'>
+	${(codeRecordNth.viewsRestriction)?then(xx,'')}
+    ${(codeRecordNth.remainingTime>0)?then(yy,'')}
     </#noautoesc>
-	<pre id="code_snippet"><code>${codeNth.code}</code></pre>
+	<pre id="code_snippet"><code>${codeRecordNth.code}</code></pre>
 </body>
 
 </html>

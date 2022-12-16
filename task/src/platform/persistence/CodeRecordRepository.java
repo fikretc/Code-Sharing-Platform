@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface CodeRecordRepository extends CrudRepository<CodeRecord, Long> {
+public interface CodeRecordRepository extends CrudRepository<CodeRecord, UUID> {
     CodeRecord findCodeRecordByCodeId(UUID id);
     List<CodeRecord> findAll();
     CodeRecord save(CodeRecord toSave);
